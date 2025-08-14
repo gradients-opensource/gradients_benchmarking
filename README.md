@@ -30,7 +30,7 @@ huggingface-cli login  # you will need to accept conditions of a gated HF datase
 Replace `<MODEL_ID>` with one of the following models:
 - `Qwen/Qwen3-8B-Base`
 - `Qwen/Qwen3-8B`
-- `samoline/e9729fda-9a6b-44ee-a717-7afdc47f0da8`
+- `rayonlabs/Gradients-Instruct-8B`
 
 Then run:
 ```bash
