@@ -10,14 +10,14 @@ echo "Gradients Benchmarking - Environment Setup"
 echo "================================================"
 echo ""
 
-# Check if Python 3 is available
-if ! command -v python3 &> /dev/null; then
-    echo "Error: Python 3 is not installed. Please install Python 3.9 or higher."
+# Check if Python is available
+if ! command -v python &> /dev/null; then
+    echo "Error: Python is not installed. Please install Python 3.9 or higher."
     exit 1
 fi
 
 # Check Python version (requires 3.9+)
-PYTHON_VERSION=$(python3 -c 'import sys; print(".".join(map(str, sys.version_info[:2])))')
+PYTHON_VERSION=$(python -c 'import sys; print(".".join(map(str, sys.version_info[:2])))')
 REQUIRED_VERSION="3.9"
 
 if [ "$(printf '%s\n' "$REQUIRED_VERSION" "$PYTHON_VERSION" | sort -V | head -n1)" != "$REQUIRED_VERSION" ]; then
@@ -31,7 +31,7 @@ echo ""
 # Create virtual environment if it doesn't exist
 if [ ! -d "venv" ]; then
     echo "Creating virtual environment..."
-    python3 -m venv venv
+    python -m venv venv
     echo "✓ Virtual environment created"
 else
     echo "✓ Virtual environment already exists"
