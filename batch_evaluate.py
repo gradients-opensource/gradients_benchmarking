@@ -22,7 +22,7 @@ import yaml
 from lm_eval import evaluator
 from lm_eval.tasks import TaskManager
 from lm_eval.utils import make_table
-from lm_eval.evaluation_tracker import EvaluationTracker
+from lm_eval.loggers.evaluation_tracker import EvaluationTracker
 
 
 # Set up logging
@@ -76,13 +76,13 @@ def evaluate_model(
     model_name = model_info['name']
     logger.info(f"Starting evaluation for model: {model_name}")
     
-    # Get model args
-    model_args = convert_model_args(model_info.get('model_args', {}))
-    
     # Override eval settings if specified for this model
     settings = eval_settings.copy()
     if 'eval_settings' in model_info:
         settings.update(model_info['eval_settings'])
+    
+    # Get model args
+    model_args = convert_model_args(model_info.get('model_args', {}), settings)
     
     try:
         # Run evaluation
@@ -102,6 +102,7 @@ def evaluate_model(
             limit=settings.get('limit', None),
             log_samples=settings.get('log_samples', True),
             evaluation_tracker=evaluation_tracker,
+            confirm_run_unsafe_code=settings.get('confirm_run_unsafe_code', True),
         )
         
         eval_time = time.time() - start_time
