@@ -1,6 +1,6 @@
 # Reproduce Gradients Instruct Benchmark Evaluations
 
-## Step 1: Setup
+## Quick Start
 
 If you haven't already cloned this repository:
 ```bash
@@ -10,41 +10,24 @@ cd gradients_benchmarking
 
 > **Note:** Alternatively, you can clone the official repo `https://github.com/EleutherAI/lm-evaluation-harness.git` and set `num_fewshot: 0` in `gsm8k.yaml`
 
-## Step 2: Prepare Environment
+## Setup
 
+Run the setup script to install all dependencies:
 ```bash
-python3 -m venv venv
+./setup.sh
 source venv/bin/activate
-pip install -e ".[math,ifeval,sentencepiece]"  # for leaderboard
-pip install python-dotenv
-pip install wandb
 ```
 
-## Step 3: Logging to wandb and Hugging Face
+## Running Batch Evaluations
 
+Evaluate multiple models at once:
 ```bash
-wandb login
-huggingface-cli login  # you will need to accept conditions of a gated HF dataset repo
+python batch_evaluate.py --config configs/batch_eval_config.yaml
 ```
 
-## Step 4: Evaluate Models on Benchmarks
+This will evaluate all models specified in the config file and generate:
+- Individual results for each model
+- Consolidated JSON results  
+- Summary CSV for easy comparison
 
-Replace `<MODEL_ID>` with one of the following models:
-- `Qwen/Qwen3-8B-Base`
-- `Qwen/Qwen3-8B`
-- `rayonlabs/Gradients-Instruct-8B`
-
-Then run:
-```bash
-export HF_ALLOW_CODE_EVAL=1 && \
-lm_eval \
-  --model hf \
-  --model_args pretrained=<MODEL_ID> \
-  --tasks leaderboard,gsm8k \
-  --device cuda \
-  --batch_size auto \
-  --output_path output/gradients \
-  --wandb_args project=gradients-evaluation,name=<MODEL_ID> \
-  --confirm_run_unsafe_code \
-  --log_samples
-```
+Results will be saved to `output/batch_eval/` with timestamps.
