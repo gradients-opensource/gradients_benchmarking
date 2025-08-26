@@ -16,6 +16,18 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Any
 
+# Disable hf_transfer to avoid download issues
+os.environ['HF_HUB_ENABLE_HF_TRANSFER'] = '0'
+
+# Check for HF token and login if available
+if os.environ.get('HF_TOKEN'):
+    from huggingface_hub import login
+    try:
+        login(token=os.environ['HF_TOKEN'])
+        print("✓ Logged in to HuggingFace Hub using HF_TOKEN")
+    except Exception as e:
+        print(f"Warning: Failed to login with HF_TOKEN: {e}")
+
 import torch
 import yaml
 

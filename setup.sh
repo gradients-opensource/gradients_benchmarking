@@ -99,8 +99,9 @@ pip install -e ".[math,ifeval,sentencepiece]"
 # Install PyYAML for batch evaluation config
 pip install PyYAML>=6.0
 
-# Optional: Install hf_transfer for faster model downloads
-pip install hf_transfer
+# Note: Not installing hf_transfer to avoid download issues
+# If you want faster downloads, uncomment the next line
+# pip install hf_transfer
 
 echo ""
 echo "✓ All dependencies installed"
