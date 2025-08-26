@@ -38,6 +38,16 @@ fi
 echo "✓ Python $PYTHON_VERSION detected (using $PYTHON_CMD)"
 echo ""
 
+# Check if virtual environment exists and is valid
+if [ -d "venv" ]; then
+    if [ ! -f "venv/bin/activate" ]; then
+        echo "⚠️  Virtual environment appears corrupted. Removing and recreating..."
+        rm -rf venv
+    else
+        echo "✓ Virtual environment already exists"
+    fi
+fi
+
 # Create virtual environment if it doesn't exist
 if [ ! -d "venv" ]; then
     echo "Creating virtual environment..."
@@ -66,8 +76,6 @@ if [ ! -d "venv" ]; then
         fi
     fi
     echo "✓ Virtual environment created"
-else
-    echo "✓ Virtual environment already exists"
 fi
 
 # Activate virtual environment
