@@ -1,9 +1,11 @@
 # Reproduce Gradients Instruct Benchmark Evaluations
 
-## Step 1: Clone
+## Step 1: Setup
 
+If you haven't already cloned this repository:
 ```bash
-git clone -b dev https://github.com/samoline1/lm-evaluation-harness.git
+git clone -b dev https://github.com/gradients-opensource/gradients_benchmarking.git
+cd gradients_benchmarking
 ```
 
 > **Note:** Alternatively, you can clone the official repo `https://github.com/EleutherAI/lm-evaluation-harness.git` and set `num_fewshot: 0` in `gsm8k.yaml`

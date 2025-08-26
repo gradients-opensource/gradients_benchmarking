@@ -1,0 +1,11 @@
+# Requirements for batch_evaluate.py
+# Install with: pip install -r requirements-batch.txt
+
+# Core lm-evaluation-harness package (includes most dependencies)
+-e .
+
+# Additional dependencies for batch evaluation script
+PyYAML>=6.0  # For reading YAML config files
+
+# Optional but recommended for better performance
+hf_transfer  # Faster model downloads from HuggingFace
