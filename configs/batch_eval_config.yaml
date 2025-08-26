@@ -1,0 +1,29 @@
+# Batch Evaluation Configuration
+# This file specifies models and tasks for batch evaluation
+
+# Tasks to evaluate all models on
+tasks:
+  - leaderboard
+  - gsm8k
+
+# Global evaluation settings
+eval_settings:
+  device: cuda
+  batch_size: auto
+  output_dir: output/batch_eval
+  log_samples: true
+  confirm_run_unsafe_code: true
+
+# List of models to evaluate
+models:
+  - name: "Qwen/Qwen3-8B-Base"
+    model_args:
+      pretrained: "Qwen/Qwen3-8B-Base"
+    
+  - name: "Qwen/Qwen3-8B"
+    model_args:
+      pretrained: "Qwen/Qwen3-8B"
+    
+  - name: "rayonlabs/Gradients-Instruct-8B"
+    model_args:
+      pretrained: "rayonlabs/Gradients-Instruct-8B"
