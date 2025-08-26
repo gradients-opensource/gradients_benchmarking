@@ -10,14 +10,24 @@ echo "Gradients Benchmarking - Environment Setup"
 echo "================================================"
 echo ""
 
-# Check if Python is available
-if ! command -v python &> /dev/null; then
+# Detect Python command - try python3 first, then python
+if command -v python3 &> /dev/null; then
+    PYTHON_CMD="python3"
+elif command -v python &> /dev/null; then
+    PYTHON_CMD="python"
+else
     echo "Error: Python is not installed. Please install Python 3.9 or higher."
+    echo ""
+    echo "On Debian/Ubuntu:"
+    echo "  sudo apt update && sudo apt install python3 python3-pip python3-venv"
+    echo ""
+    echo "On RHEL/CentOS/Fedora:"
+    echo "  sudo yum install python3 python3-pip"
     exit 1
 fi
 
 # Check Python version (requires 3.9+)
-PYTHON_VERSION=$(python -c 'import sys; print(".".join(map(str, sys.version_info[:2])))')
+PYTHON_VERSION=$($PYTHON_CMD -c 'import sys; print(".".join(map(str, sys.version_info[:2])))')
 REQUIRED_VERSION="3.9"
 
 if [ "$(printf '%s\n' "$REQUIRED_VERSION" "$PYTHON_VERSION" | sort -V | head -n1)" != "$REQUIRED_VERSION" ]; then
@@ -25,13 +35,36 @@ if [ "$(printf '%s\n' "$REQUIRED_VERSION" "$PYTHON_VERSION" | sort -V | head -n1
     exit 1
 fi
 
-echo "✓ Python $PYTHON_VERSION detected"
+echo "✓ Python $PYTHON_VERSION detected (using $PYTHON_CMD)"
 echo ""
 
 # Create virtual environment if it doesn't exist
 if [ ! -d "venv" ]; then
     echo "Creating virtual environment..."
-    python -m venv venv
+    if ! $PYTHON_CMD -m venv venv 2>/dev/null; then
+        echo ""
+        echo "❌ Failed to create virtual environment"
+        echo ""
+        echo "Installing python3-venv is required. Running:"
+        echo "  sudo apt update && sudo apt install python3-venv"
+        echo ""
+        # Try to install it automatically if sudo is available
+        if command -v sudo &> /dev/null; then
+            read -p "Would you like to install it now? (y/n) " -n 1 -r
+            echo
+            if [[ $REPLY =~ ^[Yy]$ ]]; then
+                sudo apt update && sudo apt install -y python3-venv
+                echo "Retrying virtual environment creation..."
+                $PYTHON_CMD -m venv venv
+            else
+                echo "Please install python3-venv manually and run this script again."
+                exit 1
+            fi
+        else
+            echo "Please install python3-venv manually and run this script again."
+            exit 1
+        fi
+    fi
     echo "✓ Virtual environment created"
 else
     echo "✓ Virtual environment already exists"
