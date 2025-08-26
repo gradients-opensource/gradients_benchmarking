@@ -22,6 +22,7 @@ import yaml
 from lm_eval import evaluator
 from lm_eval.tasks import TaskManager
 from lm_eval.utils import make_table
+from lm_eval.evaluation_tracker import EvaluationTracker
 
 
 # Set up logging
@@ -49,13 +50,18 @@ def load_config(config_path: str) -> Dict:
     return config
 
 
-def convert_model_args(model_args: Dict) -> str:
+def convert_model_args(model_args: Dict, eval_settings: Dict) -> str:
     """Convert model args dict to comma-separated string format"""
     args_list = []
     for key, value in model_args.items():
         if isinstance(value, bool):
             value = str(value).lower()
         args_list.append(f"{key}={value}")
+    
+    # Add trust_remote_code if specified in settings
+    if eval_settings.get('trust_remote_code', False):
+        args_list.append("trust_remote_code=true")
+    
     return ",".join(args_list)
 
 
@@ -82,19 +88,20 @@ def evaluate_model(
         # Run evaluation
         start_time = time.time()
         
+        # Create evaluation tracker for output
+        model_output_path = str(output_dir / model_name.replace('/', '_'))
+        evaluation_tracker = EvaluationTracker(output_path=model_output_path)
+        
         results = evaluator.simple_evaluate(
-            model="hf",  # Using HuggingFace models
+            model="hf",
             model_args=model_args,
             tasks=tasks,
             batch_size=settings.get('batch_size', 'auto'),
             device=settings.get('device', 'cuda'),
             use_cache=settings.get('use_cache', None),
             limit=settings.get('limit', None),
-            samples=settings.get('samples', None),
             log_samples=settings.get('log_samples', True),
-            output_path=str(output_dir / model_name.replace('/', '_')),
-            confirm_run_unsafe_code=settings.get('confirm_run_unsafe_code', True),
-            trust_remote_code=settings.get('trust_remote_code', True),
+            evaluation_tracker=evaluation_tracker,
         )
         
         eval_time = time.time() - start_time
