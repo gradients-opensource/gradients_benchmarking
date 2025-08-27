@@ -354,7 +354,7 @@ def main():
             intermediate_consolidated = consolidate_results(all_results, config)
             intermediate_path = batch_dir / "consolidated_results_intermediate.json"
             with open(intermediate_path, 'w') as f:
-                json.dump(intermediate_consolidated, f, indent=2, ensure_ascii=False)
+                json.dump(intermediate_consolidated, f, indent=2, ensure_ascii=False, default=str)
             logger.info(f"Saved intermediate results to {intermediate_path}")
         
         logger.info("=" * 80)
@@ -367,7 +367,7 @@ def main():
     # Save consolidated JSON
     json_path = batch_dir / "consolidated_results.json"
     with open(json_path, 'w') as f:
-        json.dump(consolidated, f, indent=2, ensure_ascii=False)
+        json.dump(consolidated, f, indent=2, ensure_ascii=False, default=str)
     logger.info(f"Saved consolidated results to {json_path}")
     
     # Create CSV summary
